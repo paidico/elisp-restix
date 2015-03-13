@@ -121,4 +121,4 @@
       (message "Executando: %s ..." cmd)
       (restix-print-result-internal (shell-command-to-string cmd)))))
 
-(provide 'restix-utils)
+(provide 'restix-util)
