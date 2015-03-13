@@ -61,14 +61,12 @@
 		       (number-sequence 0 77)
 		       "")))
     (save-excursion
-      (if (numberp pos)
+      (if (integer-or-marker-p pos)
 	  (goto-char pos))
-      (newline)
-      (insert br)
-      (newline)
-      (insert msg)
-      (newline)
-      (insert br))))
+      (mapcar (lambda (m)
+		(newline)
+		(insert m))
+	      (list br msg br)))))
 
 (defun restix-http-ssl-internal (url ssl)
   "Retorna string com URL com prefixo \"http://\" ou \"https://\" se for ssl"
