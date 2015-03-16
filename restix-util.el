@@ -20,11 +20,12 @@
 	(concat url (if
 			fields
 			(concat (if (string-match "\?" url) "&" "?")
-				(restix-params-encoded fields)) "")))
+				(restix-params-encoded fields))
+		      "")))
   (restix-request-internal url "GET" req-headers fields))
 
 (defun restix-params-encoded (params)
-  "Retorna query string de paramêtros PARAMS"
+  "Retorna query string de parâmetros PARAMS"
   (mapconcat 
    (lambda (p)
      (concat (url-hexify-string (car p))
@@ -32,6 +33,19 @@
 	     (url-hexify-string (cdr p))))
    params
    "&"))
+
+(defun restix-clear-buffer-results ()
+  "Elimina conteúdo presente no interior do padrão de print"
+  (interactive)
+  (let ((re "[-=]\\{78\\}") p0 p1)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward re nil t)
+	(setq p0 (- (point) 78))
+	(if (re-search-forward re nil t)
+	    (progn
+	      (setq p1 (point))
+	      (delete-region p0 p1)))))))
 
 (defun restix-json-stringify-region ()
   "Transforma conteúdo de region em texto para passagem de parâmetro json"
@@ -97,7 +111,7 @@
 	      (if (not (stringp f))
 		  (error (format template-error "FIELDS"))))
 	    fields)
-    (let ((cmd (format "curl -skLX %s" req-method)))
+    (let ((cmd (format "curl -iskLX %s" req-method)))
       (if (> (length req-headers) 0)
 	  (setq cmd
 		(concat cmd
